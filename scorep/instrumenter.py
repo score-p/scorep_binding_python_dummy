@@ -1,6 +1,4 @@
 import scorep.instrumenters.dummy
-import scorep.instrumenters.scorep_profile
-import scorep.instrumenters.scorep_trace
 
 global_instrumenter = None
 
@@ -18,18 +16,8 @@ def get_instrumenter(
     """
     global global_instrumenter
     if global_instrumenter is None:
-        if instrumenter_type == "profile":
-            global_instrumenter = scorep.instrumenters.scorep_profile.ScorepProfile(
-                bindings, enable_instrumenter)
-        elif instrumenter_type == "trace":
-            global_instrumenter = scorep.instrumenters.scorep_trace.ScorepTrace(
-                bindings, enable_instrumenter)
-        elif instrumenter_type == "dummy":
-            global_instrumenter = scorep.instrumenters.dummy.ScorepDummy(
-                enable_instrumenter)
-        else:
-            raise RuntimeError(
-                "instrumenter_type \"{}\" unkown".format(instrumenter_type))
+        global_instrumenter = scorep.instrumenters.dummy.ScorepDummy(
+            enable_instrumenter)
 
     return global_instrumenter
 

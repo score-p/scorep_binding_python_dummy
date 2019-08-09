@@ -1,29 +1,15 @@
-from distutils.core import setup, Extension
-import scorep.helper
-import os
-import logging
-
-cmodules = []
-(include, _, _, _, _) = scorep.helper.generate_compile_deps()
-cmodules.append(Extension('scorep.scorep_bindings',
-                          include_dirs=include,
-                          libraries=[],
-                          extra_compile_args=["-std=c++11"],
-                          sources=['src/scorep.cpp']))
+from distutils.core import setup
 
 setup(
     name='scorep',
     version='2.0',
-    description='This is a scorep tracing package for python',
+    description='This is a dummy package for the scorep pakcage',
     author='Andreas Gocht',
     author_email='andreas.gocht@tu-dresden.de',
-    url='https://github.com/score-p/scorep_binding_python',
+    url='https://github.com/score-p/scorep_binding_python_dummy',
     long_description='''
-This package allows tracing of python code using Score-P.
-A working Score-P version is required.
-For MPI tracing it uses LD_PREALOAD.
-Besides this, it uses the traditional python-tracing infrastructure.
+This package only provides the user interface of the Score-P Python tracing.
+The goal is to allow the presence of userinstrumentation in packages even if no Score-P is present.
 ''',
-    packages=['scorep', 'scorep.instrumenters'],
-    ext_modules=cmodules
+    packages=['scorep', 'scorep.instrumenters']
 )
