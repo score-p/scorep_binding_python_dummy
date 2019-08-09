@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(
-    name='scorep',
+    name='scorep-dummy',
     version='2.0',
     description='This is a dummy package for the scorep pakcage',
     author='Andreas Gocht',
