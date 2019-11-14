@@ -59,7 +59,9 @@ class TestScorepBindingsPython(unittest.TestCase):
         std_err = out[2]
 
         self.assertEqual(std_err, self.expected_std_err)
-        self.assertEqual(std_out, "hello world\n")
+        self.assertEqual(
+            std_out,
+            "hello world\nhello world\nhello world3\nhello world4\n")
 
     def test_context(self):
         env = self.env
