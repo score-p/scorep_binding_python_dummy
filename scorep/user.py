@@ -131,7 +131,7 @@ class region(object):
 def rewind_begin(name, file_name=None, line_number=None):
     """
     Begin of an User region. If file_name or line_number is None, both will
-    bet determined automatically
+    be determined automatically
     @param name name of the user region
     @param file_name file name of the user region
     @param line_number line number of the user region
@@ -159,32 +159,6 @@ def rewind_end(name, value):
     scorep.instrumenter.get_instrumenter().rewind_end(name, value)
 
 
-def oa_region_begin(name, file_name=None, line_number=None):
-    """
-    Begin of an Online Access region. If file_name or line_number is None, both will
-    bet determined automatically
-    @param name name of the user region
-    @param file_name file name of the user region
-    @param line_number line number of the user region
-    """
-
-    with scorep.instrumenter.disable():
-
-        if file_name is None or line_number is None:
-            frame = inspect.currentframe().f_back
-            file_name = frame.f_globals.get('__file__', None)
-            line_number = frame.f_lineno
-        if file_name is not None:
-            full_file_name = os.path.abspath(file_name)
-        else:
-            full_file_name = "None"
-
-        scorep.instrumenter.get_instrumenter().oa_region_begin(
-            name, full_file_name, line_number)
-
-
-def oa_region_end(name):
-    scorep.instrumenter.get_instrumenter().oa_region_end(name)
 
 
 def enable_recording():
@@ -205,3 +179,17 @@ def parameter_uint(name, val):
 
 def parameter_string(name, string):
     scorep.instrumenter.get_instrumenter().user_parameter_string(name, string)
+
+def force_finalize():
+    """
+    Forces a finalisation, which might trigger traces or profiles to be written.
+    Events after a call to @force_finalize() might not be recorded.
+    """
+    scorep.instrumenter.get_instrumenter().force_finalize()
+
+
+def reregister_exit_handler():
+    """
+    Registers necessary atexit handler again if they have been overwritten.
+    """
+    scorep.instrumenter.get_instrumenter().reregister_exit_handler()

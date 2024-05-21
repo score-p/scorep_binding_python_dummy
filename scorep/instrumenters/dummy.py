@@ -39,12 +39,6 @@ class ScorepDummy:
     def rewind_end(self, name, value):
         pass
 
-    def oa_region_begin(self, name, file_name=None, line_number=None):
-        pass
-
-    def oa_region_end(self, name):
-        pass
-
     def user_enable_recording(self):
         pass
 
@@ -58,4 +52,10 @@ class ScorepDummy:
         pass
 
     def user_parameter_string(self, name, string):
+        pass
+        
+    def force_finalize(self):
+        pass
+
+    def reregister_exit_handler(self):
         pass

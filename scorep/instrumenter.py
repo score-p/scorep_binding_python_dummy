@@ -1,16 +1,22 @@
 import scorep.instrumenters.dummy
+import platform
 
 global_instrumenter = None
 
 
+def has_c_instrumenter():
+    """Return true if the C instrumenter(s) are available"""
+    # We are using the UTF-8 string features from Python 3
+    # The C Instrumenter functions are not available on PyPy
+    return platform.python_implementation() != 'PyPy'
+
+
 def get_instrumenter(
-        bindings=None,
         enable_instrumenter=False,
         instrumenter_type="dummy"):
     """
     returns an instrumenter
 
-    @param bindings the c/c++ scorep bindings
     @param enable_instrumenter True if the Instrumenter should be enabled when run is called
     @param instrumenter_type which python tracing interface to use. Currently available: `profile` (default), `trace` and `dummy`
     """
@@ -49,7 +55,7 @@ class enable():
     This overides --no-instrumenter (--nopython leagacy)
     """
 
-    def __init__(self):
+    def __init__(self, region_name=""):
         pass
 
     def __enter__(self):
@@ -61,6 +67,16 @@ class enable():
         if not self.tracer_registered:
             scorep.instrumenter.get_instrumenter().unregister()
 
+    def _recreate_cm(self):
+        return self
+
+    def __call__(self, func):
+        with disable():
+            @functools.wraps(func)
+            def inner(*args, **kwds):
+                with self._recreate_cm():
+                    return func(*args, **kwds)
+        return inner
 
 class disable():
     """
@@ -72,7 +88,7 @@ class disable():
     This overides --no-instrumenter (--nopython leagacy)
     """
 
-    def __init__(self):
+    def __init__(self, region_name=""):
         pass
 
     def __enter__(self):
@@ -83,3 +99,17 @@ class disable():
     def __exit__(self, exc_type, exc_value, traceback):
         if self.tracer_registered:
             scorep.instrumenter.get_instrumenter().register()
+
+    def _recreate_cm(self):
+        return self
+
+    def __call__(self, func):
+        self.__enter__()
+        try:
+            @functools.wraps(func)
+            def inner(*args, **kwds):
+                with self._recreate_cm():
+                    return func(*args, **kwds)
+        finally:
+            self.__exit__()
+        return inner
